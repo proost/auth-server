@@ -1,0 +1,2 @@
+insert into users (id, name, password, email, create_date, modify_date) values ( 1, 'tester1', '$2a$10$G/ADAGLU3vKBd62E6GbrgetQpEKu2ukKgiDR5TWHYwrem0cSv6Z8m', 'tester1@example.com', now(), now());
+insert into users (id, name, password, email, create_date, modify_date) values ( 2, 'tester2', '$2a$10$G/ADAGLU3vKBd62E6GbrgetQpEKu2ukKgiDR5TWHYwrem0cSv6Z8m', 'tester2@example.com', now(), now());
