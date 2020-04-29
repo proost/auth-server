@@ -4,6 +4,12 @@ FROM users
 WHERE email=%s
 """
 
+GET_USER_BY_EMAIL_AND_PASSWORD = """ 
+SELECT name, email 
+FROM users
+WHERE email=%s and password=%s
+"""
+
 CREATE_USER = """
 INSERT INTO users (name, password, email)
 values (%s, %s, %s)

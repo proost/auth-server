@@ -1,6 +1,7 @@
 import pytest
 import pymysql
 
+from authserver.entity.User import User, UserFromView
 from authserver.resources.config import DB_HOST, DB_PASSWORD, DB_USER, DB_NAME
 from authserver.data_layer.rdb_manager import (
     DbContextManager, DbContextManagerWithTxn
@@ -19,40 +20,72 @@ def generate_connector():
     )
     yield conn
 
+def assert_user_equal(user1, user2):
+    if user1.name != user2.name:
+        return False
+    
+    if user1.password != user2.password:
+        return False
+
+    if user1.email != user2.email:
+        return False
+
+    return True
+
 def test_create_user(generate_connector):
-    username = 'tester3'
-    password = '12345'
-    email = 'tester3@example.com'
+    user = UserFromView("tester3", "12345", "tester3@example.com")
 
     conn = generate_connector
-    res = None
     with DbContextManagerWithTxn(optional_connector=conn, is_test=True) as mgr:
-        res = mgr.create_user(username, password, email)
-    
-    assert res
+        res = mgr.create_user(user) 
+        assert res
 
 def test_get_user_by_email(generate_connector):
-    email = "tester0@example.com"
-    expect = {
+    user = User(email="tester0@example.com")
+    data = {
         "email": "tester0@example.com",
         "name": "tester0"
     }
+    expect = User(**data)
 
     conn = generate_connector
-    res = None
     with DbContextManager(optional_connector=conn) as mgr:
-        res = mgr.get_user_by_email(email)
-    
-    assert res == expect
+        res = mgr.get_user_by_email(user)
+        assert assert_user_equal(res, expect)
+
+def test_get_user_by_email_not_found(generate_connector):
+    user = User(email="tester000@example.com")
+
+    conn = generate_connector
+    with DbContextManager(optional_connector=conn) as mgr:
+        res = mgr.get_user_by_email(user)
+        assert res == None
+
+def test_get_user_by_email_and_password(generate_connector):
+    user = User(password="1234", email="tester0@example.com")
+    data = {
+        "email": "tester0@example.com",
+        "name": "tester0"
+    }
+    expect = User(**data)
+
+    conn = generate_connector
+    with DbContextManager(optional_connector=conn) as mgr:
+        res = mgr.get_user_by_email_and_password(user)
+        assert assert_user_equal(res, expect)
+
+def test_get_user_by_email_and_password_not_matched(generate_connector):
+    user = User(password="12345", email="tester0@example.com")
+
+    conn = generate_connector
+    with DbContextManager(optional_connector=conn) as mgr:
+        res = mgr.get_user_by_email_and_password(user)
+        assert res == None
 
 def test_change_user_by_email(generate_connector):
     conn = generate_connector
-    email = "tester0@example.com"
-    password = "12345"    
-    name = "tester0"
+    user = UserFromView("tester0", "12345", "tester0example.com")
 
-    res = None
     with DbContextManagerWithTxn(optional_connector=conn, is_test=True) as mgr:
-        res = mgr.change_user_by_email(name, password, email)
-    
-    assert res
+        res = mgr.change_user_by_email(user)
+        assert res
