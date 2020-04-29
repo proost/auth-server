@@ -4,7 +4,8 @@ from flask_jwt_extended import (
     get_jwt_identity
 )
 
-from resources.config import SECRET_KEY
+from authserver.resources.config import SECRET_KEY
+from authserver.templates.forms import LoginForm
 
 
 app = Flask(__name__)
@@ -12,16 +13,13 @@ app.config["JWT_SECRET_KEY"] = SECRET_KEY
 
 @app.route("/")
 def root():
-    return redirect(url_for("/login"))
+    return redirect(url_for("login"))
 
-@app.route("/auth/login", methods=["POST"])
-def auth():
-        
-    return redirect(url_for("home", username=username))
-
-@app.route("/login", methods=["GET"])
+@app.route("/login", methods=["GET", "POST"])
 def login():
-    return render_template("login.html")
+    if request.method == "GET":
+        form = LoginForm(request.form)
+        return render_template("login.html", form=form)
 
 @app.route("/home/<username>")
 @jwt_required

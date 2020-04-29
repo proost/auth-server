@@ -4,17 +4,15 @@
         <meta charset="UTF-8">
         <title>Login</title>
     </head>
-    <body>
+    {% block body %}    
         <div>
             <div>
-                <form method="post" action="/auth/login">
+                <form method="post" action="/login">
                     <div>
-                        <label>Email</label>
-                        <input type="email" name="userId" placeholder="이메일 입력해주세요">
+                        {{ form.name }}
                     </div>
                     <div>
-                        <label>Password</label>
-                        <input type="password" name="password">
+                        {{ form.password }}
                     </div>
                     <div>
                         <label></label>
@@ -23,5 +21,5 @@
                 </form>
             </div>
         </div>
-    </body>
+    {% endblock %}
 </html>
