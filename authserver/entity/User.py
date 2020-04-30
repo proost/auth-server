@@ -1,5 +1,6 @@
 from werkzeug.security import generate_password_hash
 
+
 class User:
     def __init__(self, name=None, password=None, email=None):
         self.name = name
@@ -14,7 +15,7 @@ class User:
 
 
 class UserFromView(User):
-    def __init__(self, name, password, email):
+    def __init__(self, name=None, password=None, email=None):
         encrypted_pw = super().encrypt_password(password)
         super().__init__(name=name, password=encrypted_pw, email=email)
 

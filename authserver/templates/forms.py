@@ -2,7 +2,7 @@ from wtforms import Form, StringField, PasswordField, validators
 
 class LoginForm(Form):
     email = StringField('Email Address', [validators.Email(), validators.Required()])
-    password = PasswordField('New Password', [validators.Required()])
+    password = PasswordField('Password', [validators.Required()])
 
 class Registration(Form):
     name = StringField('Username', [validators.Required()])
