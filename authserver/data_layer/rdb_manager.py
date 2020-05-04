@@ -1,6 +1,6 @@
 import pymysql
 
-from authserver.entity.User import User
+from authserver.entity.user import User
 from authserver.data_layer.data_access_sqls import (
     GET_USER_BY_EMAIL, CREATE_USER, CHAGE_USER_BY_EMAIL, GET_USER_BY_EMAIL_AND_PASSWORD
 )
