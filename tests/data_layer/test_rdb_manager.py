@@ -1,8 +1,9 @@
 import pytest
 import pymysql
 
-from authserver.entity.User import User, UserFromView
+from authserver.entity.user import User, UserFromView
 from authserver.resources.config import DB_HOST, DB_PASSWORD, DB_USER, DB_NAME
+from tests.utilites import assert_user_equal
 from authserver.data_layer.rdb_manager import (
     DbContextManager, DbContextManagerWithTxn
 )
@@ -19,18 +20,6 @@ def generate_connector():
         cursorclass=pymysql.cursors.DictCursor
     )
     yield conn
-
-def assert_user_equal(user1, user2):
-    if user1.name != user2.name:
-        return False
-    
-    if user1.password != user2.password:
-        return False
-
-    if user1.email != user2.email:
-        return False
-
-    return True
 
 def test_create_user(generate_connector):
     user = UserFromView("tester3", "12345", "tester3@example.com")
