@@ -1,11 +1,14 @@
-def assert_user_equal(user1, user2):
-    if user1.name != user2.name:
+from werkzeug.security import check_password_hash
+
+
+def assert_user_equal(not_hashed_user, hashed_user):
+    if not_hashed_user.name != hashed_user.name:
         return False
     
-    if user1.password != user2.password:
+    if not check_password_hash(not_hashed_user.password, hashed_user.password):
         return False
 
-    if user1.email != user2.email:
+    if not_hashed_user.email != hashed_user.email:
         return False
 
     return True

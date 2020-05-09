@@ -17,7 +17,7 @@ class User:
 
 
 @dataclass
-class UserFromView(User):
+class UserToRegister(User):
     def __post_init__(self):
         self.password = super().encrypt_password(self.password)
 

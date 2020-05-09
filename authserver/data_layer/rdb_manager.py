@@ -1,10 +1,8 @@
 import pymysql
 
 from authserver.entity.user import User
-from authserver.data_layer.data_access_sqls import (
-    GET_USER_BY_EMAIL, CREATE_USER, CHAGE_USER_BY_EMAIL, GET_USER_BY_EMAIL_AND_PASSWORD
-)
-from authserver.resources.config import DB_HOST, DB_PASSWORD, DB_USER, DB_NAME
+from authserver.data_layer.data_access_sqls import GET_USER_BY_EMAIL 
+from authserver.resources.config import RDB_HOST, RDB_PASSWORD, RDB_USER, RDB_NAME
 
 
 class DbContextManagerBase:
@@ -13,16 +11,16 @@ class DbContextManagerBase:
             self.conn = optional_connector
         else:
             self.conn = pymysql.connect(
-                host=DB_HOST,
-                user=DB_USER,
-                password=DB_PASSWORD,
-                db=DB_NAME,
+                host=RDB_HOST,
+                user=RDB_USER,
+                password=RDB_PASSWORD,
+                db=RDB_NAME,
                 charset="utf8",
                 cursorclass=pymysql.cursors.DictCursor
             )
 
         self.cursor = self.conn.cursor()
-    
+
     def get_user_by_email(self, user):
         try:
             self.cursor.execute(GET_USER_BY_EMAIL, (user.email))
@@ -31,33 +29,6 @@ class DbContextManagerBase:
         except Exception as e:
             print(e)
             return None
-
-    def get_user_by_email_and_password(self, user):
-        try:
-            self.cursor.execute(GET_USER_BY_EMAIL_AND_PASSWORD, (user.email, user.password))
-            data = self.cursor.fetchone()
-            return User(**data)
-        except Exception as e:
-            print(e)
-            return None
-
-    def create_user(self, user):
-        try:
-            self.cursor.execute(CREATE_USER, (user.name, user.password, user.email))
-            return True
-        except Exception as e:
-            print(e)
-            return False
-
-    def change_user_by_email(self, user):
-        try:
-            self.cursor.execute(
-                CHAGE_USER_BY_EMAIL, (user.name, user.password, user.email)
-            )
-            return True
-        except Exception as e:
-            print(e)
-            return False
 
 
 class DbContextManagerWithTxn(DbContextManagerBase):
